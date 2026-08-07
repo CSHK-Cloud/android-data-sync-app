@@ -20,7 +20,7 @@ dependencies:
       path: packages/dropdown_button2
       
   # === 視覺、字體與圖表套件 ===
-  fl_chart: 1.0.0
+  fl_chart: 0.69.0
   flutter_animate: 4.5.0
   font_awesome_flutter: 10.7.0
   from_css_color: 2.0.0
