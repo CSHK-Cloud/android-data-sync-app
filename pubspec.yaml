@@ -79,4 +79,5 @@ dependency_overrides:
   flutter_cache_manager: 3.4.1
   flutter_animate: 4.5.0
   fl_chart: 0.69.0
+  cached_network_image: 3.4.1
   
