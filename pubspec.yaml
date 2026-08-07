@@ -76,3 +76,5 @@ dependency_overrides:
   intl: 0.20.2
   google_fonts: 6.1.0
   font_awesome_flutter: 10.7.0
+  flutter_cache_manager: 3.4.1
+  
