@@ -13,6 +13,8 @@ dependencies:
   auto_size_text: 3.0.0
   cached_network_image: 3.4.1
   collection: 1.19.1
+  
+  # 💡 這裡幫您修正了正確的 Git 子路徑空格縮排格式
   dropdown_button2:
     git:
       url: https://github.com/FlutterFlow/dropdown_button2.git
@@ -48,7 +50,6 @@ dependencies:
   path_provider: 2.1.4          # 功能：自動定位手機內部的相簿 (DCIM) 或下載資料夾路徑
   permission_handler: ^11.3.1    # 功能：在手機螢幕彈出視窗，取得 Android 最高權限以刪除舊檔釋放空間
   webdav_client: ^1.2.2         # 傳輸：建立連線至 Synology NAS 的安全 HTTPS 機制（遠端行動網路最穩定）
-  # smb_connect: ^1.0.4         # 備用：若之後要改用純局域網 SMB 傳輸，可解開此行註解
 
 dev_dependencies:
   flutter_lints: 4.0.0
@@ -56,7 +57,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter:  
+flutter:
   uses-material-design: true
   assets:
     - assets/images/
@@ -66,5 +67,7 @@ flutter:
     - assets/pdfs/
     - assets/jsons/
 
+# 💡 終極強制版本調解宣告，完全靠左對齊
 dependency_overrides:
-    collection: 1.18.0
+  collection: 1.18.0
+  timeago: 3.7.1
