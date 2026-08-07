@@ -1,5 +1,5 @@
 name: data_vault_sync
-description: A new Flutter project for enterprise safe data sync and local erase.
+description: A pure native Flutter project for enterprise safe data sync and local erase.
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -7,77 +7,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-    
-  # === FlutterFlow 官方通用核心基礎 UI 包 ===
-  flutterflow_ui: ^0.2.0
-  auto_size_text: 3.0.0
-  cached_network_image: 3.4.1
-  collection: 1.19.1
-  
-  # 💡 這裡幫您修正了正確的 Git 子路徑空格縮排格式
-  dropdown_button2:
-    git:
-      url: https://github.com/FlutterFlow/dropdown_button2.git
-      ref: 514178337dfbea442f617daed39c704b57593fc9
-      path: packages/dropdown_button2
-      
-  # === 視覺、字體與圖表套件 ===
-  fl_chart: 0.69.0
-  flutter_animate: 4.5.0
-  font_awesome_flutter: 10.7.0
-  from_css_color: 2.0.0
-  google_fonts: 6.1.0
-  percent_indicator: 4.2.2
-  
-  # === 核心架構、狀態與導航管理 ===
-  go_router: 12.1.3
-  provider: 6.1.5
-  shared_preferences: 2.5.3
-  sqflite: 2.3.3+1
-  json_path: 0.7.2
-  intl: 0.20.2
-  timeago: 3.7.1
-  url_launcher: 6.3.1
-  stream_transform: 2.1.0
 
-  # === 為了安全編譯自訂函式所保留的 Firebase 資料庫核心包 ===
-  cloud_firestore: 5.6.9
-  firebase_core: 3.14.0
+  # === 核心架構、狀態與導航管理（全部使用標準官方穩定版） ===
+  provider: ^6.1.5
+  intl: ^0.19.3
+  timeago: ^3.7.0
 
-  # =======================================================
-  # 🔥 以下是這款 App 專屬添加的「本機釋放空間與 NAS 連線」核心功能套件
-  # =======================================================
-  path_provider: 2.1.4          # 功能：自動定位手機內部的相簿 (DCIM) 或下載資料夾路徑
-  permission_handler: ^11.3.1    # 功能：在手機螢幕彈出視窗，取得 Android 最高權限以刪除舊檔釋放空間
-  webdav_client: ^1.2.2         # 傳輸：建立連線至 Synology NAS 的安全 HTTPS 機制（遠端行動網路最穩定）
+  # === 🔥 實體本機空間釋放與 NAS 安全傳輸核心套件 ===
+  path_provider: ^2.1.4
+  permission_handler: ^11.3.1
+  webdav_client: ^1.2.2
 
 dev_dependencies:
-  flutter_lints: 4.0.0
-  lints: 4.0.0
+  flutter_lints: ^3.0.0
   flutter_test:
     sdk: flutter
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/images/
-    - assets/videos/
-    - assets/audios/
-    - assets/rive_animations/
-    - assets/pdfs/
-    - assets/jsons/
-
-# 💡 終極強制版本調解宣告，完全靠左對齊
-dependency_overrides:
-  collection: 1.18.0
-  timeago: 3.7.1
-  sqflite: 2.3.3+1
-  provider: 6.1.5
-  intl: 0.20.2
-  google_fonts: 6.1.0
-  font_awesome_flutter: 10.7.0
-  flutter_cache_manager: 3.4.1
-  flutter_animate: 4.5.0
-  fl_chart: 0.69.0
-  cached_network_image: 3.4.1
-  
