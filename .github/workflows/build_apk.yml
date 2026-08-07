@@ -2,7 +2,7 @@ name: Build Business APK
 
 on:
   push:
-    branches: [ main, dev ] # 讓 main 和 dev 分支都能觸發打包，最保險！
+    branches: [ main, dev ]
 
 jobs:
   build:
@@ -21,6 +21,12 @@ jobs:
         with:
           flutter-version: '3.24.0'
           channel: 'stable'
+
+      # 💡 核心外殼自動拯救步驟：現場原地用最新官方指令生成乾淨、無安全漏洞的 Android 外殼！
+      - name: Auto Create Clean Android Shell
+        run: |
+          flutter create . --org com.cshk.datavault --project-name data_vault_sync
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />' android/app/src/main/AndroidManifest.xml
 
       - name: Install dependencies
         run: flutter pub get
