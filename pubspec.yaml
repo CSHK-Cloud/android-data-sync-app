@@ -71,3 +71,4 @@ flutter:
 dependency_overrides:
   collection: 1.18.0
   timeago: 3.7.1
+  sqflite: 2.3.3+1                                        
