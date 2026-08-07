@@ -74,3 +74,4 @@ dependency_overrides:
   sqflite: 2.3.3+1
   provider: 6.1.5
   intl: 0.20.2
+  google_fonts: 6.1.0
