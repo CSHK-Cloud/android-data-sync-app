@@ -1,0 +1,27 @@
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        def propertiesFile = new File(rootProject.projectDir, 'local.properties')
+        if (propertiesFile.exists()) {
+            propertiesFile.withInputStream { properties.load(it) }
+        }
+        def flutterSdkPath = properties.getProperty('flutter.sdk')
+        if (flutterSdkPath == null || flutterSdkPath == '') {
+            throw new GradleException('flutter.sdk not found. Define flutter.sdk in local.properties')
+        }
+        return flutterSdkPath
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    plugins {
+        id "dev.flutter.flutter-gradle-plugin" version "1.0.0"
+    }
+}
+
+include ':app'
+rootProject.name = 'data_vault_sync'
