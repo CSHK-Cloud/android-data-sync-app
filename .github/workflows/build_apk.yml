@@ -7,45 +7,63 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        cache: 'gradle' # 💡 加強版快取：大幅優化 Android dependencies 下載速度
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.0'
-          channel: 'stable'
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.0'
+        channel: 'stable'
+        cache: true # 💡 加強版快取：自動快取 Flutter 官方與第三方套件
 
-      # 💡 步驟 1：強制現場生成乾淨的 Android 2026/2027 最新安全外殼
-      - name: Auto Create Clean Android Shell
-        run: |
-          rm -rf android build
-          flutter create . --org com.cshk.datavault --project-name data_vault_sync
-          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />' android/app/src/main/AndroidManifest.xml
+    # 💡 步驟 1：強制現場生成乾淨的 Android 安全外殼，並現場注入企業同步專用最高權限
+    - name: Auto Create Clean Android Shell
+      run: |
+        rm -rf android build
+        flutter create . --org com.cshk.datavault --project-name data_vault_sync --overwrite
+        
+        # 修正：精確將權限注入在 <application> 標籤上方，確保 XML 格式百分之百合法
+        sed -i '/<application/i \    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />' android/app/src/main/AndroidManifest.xml
 
-      # 💡 步驟 2：神級腳本大掃除！自動將所有檔案裡殘留的 flutterflow_ui 和 google_fonts 引用行徹底抹除，並對齊單複數檔名
-      - name: Code Deep Clean & Path Realignment
-        run: |
-          find lib/ -name "*.dart" -exec sed -i "/flutterflow_ui/d" {} +
-          find lib/ -name "*.dart" -exec sed -i "/google_fonts/d" {} +
-          find lib/ -name "*.dart" -exec sed -i "s|sync_task_widget.dart|sync_tasks_widget.dart|g" {} +
-          find lib/ -name "*.dart" -exec sed -i "s|sync_task_model.dart|sync_tasks_model.dart|g" {} +
-          flutter clean
+    # 💡 步驟 2：🔥【完美加強版】程式碼與設定檔深度大掃除 (Deep Clean & Realignment)
+    - name: Code Deep Clean & Path Realignment
+      run: |
+        echo "=== 開始深度大掃除（Deep Clean） ==="
+        
+        # 1. 徹底拔除所有 .dart 程式碼中的 FlutterFlow 專屬 UI 和字型引用，防止編譯報錯
+        find lib/ -name "*.dart" -exec sed -i "/flutterflow_ui/d" {} +
+        find lib/ -name "*.dart" -exec sed -i "/google_fonts/d" {} +
+        
+        # 2. 自動修正 FlutterFlow 常見的檔案名稱「單複數不對齊」地雷
+        find lib/ -name "*.dart" -exec sed -i "s|sync_task_widget.dart|sync_tasks_widget.dart|g" {} +
+        find lib/ -name "*.dart" -exec sed -i "s|sync_task_model.dart|sync_tasks_model.dart|g" {} +
+        
+        # 3. 🎯【加強版重點】：直接從 pubspec.yaml 中，用正則表達式把這兩個過期套件的宣告抹除
+        # 無論它後面帶有什麼版號（例如 ^1.0.0 或 空格），只要包含關鍵字就整行刪除
+        sed -i '/flutterflow_ui/d' pubspec.yaml
+        sed -i '/google_fonts/d' pubspec.yaml
+        
+        echo "=== 掃除完成，開始清理快取 ==="
+        flutter clean
 
-      - name: Install dependencies
-        run: flutter pub get
+    - name: Install dependencies
+      run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
+    # 💡 步驟 3：編譯 APK (加上 --no-pub 確保完全使用大掃除後乾淨的套件清單)
+    - name: Build APK
+      run: flutter build apk --release --no-pub
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
