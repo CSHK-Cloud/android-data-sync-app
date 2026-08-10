@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Enterprise Sync & Clear',
+      title: 'CSHK Enterprise Sync',
       debugShowCheckedModeBanner: false,
       // 使用 Android 14/15 最新推崇的 Material 3 專業深色商務主題
       theme: ThemeData(
@@ -22,7 +22,36 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         colorSchemeSeed: Colors.teal,
       ),
-      home: const MainNavigationScreen(),
+      home: const CustomHomePage(),
+    );
+  }
+}
+
+class CustomHomePage extends StatelessWidget {
+  const CustomHomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Data Vault Sync'),
+        backgroundColor: Colors.teal,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.sync_alt, size: 64, color: Colors.teal),
+            SizedBox(height: 16),
+            Text(
+              'Custom App Home',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text('This screen confirms the app is using your custom entry point.'),
+          ],
+        ),
+      ),
     );
   }
 }
