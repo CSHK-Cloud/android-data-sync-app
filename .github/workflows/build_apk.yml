@@ -33,12 +33,8 @@ jobs:
     # 💡 步驟 2：執行程式碼深度大掃除
     - name: Code Deep Clean & Path Realignment
       run: |
-        find lib/ -name "*.dart" -exec sed -i "/flutterflow_ui/d" {} +
-        find lib/ -name "*.dart" -exec sed -i "/google_fonts/d" {} +
         find lib/ -name "*.dart" -exec sed -i "s|sync_task_widget.dart|sync_tasks_widget.dart|g" {} +
         find lib/ -name "*.dart" -exec sed -i "s|sync_task_model.dart|sync_tasks_model.dart|g" {} +
-        sed -i '/flutterflow_ui/d' pubspec.yaml
-        sed -i '/google_fonts/d' pubspec.yaml
         
         # 💡 強制還原：因為 flutter create . 會偷偷在 lib/ 放一個預設的 main.dart，我們必須用 Git 裡的正式版把它覆蓋回來！
         git checkout HEAD -- lib/main.dart
