@@ -1,8 +1,10 @@
 package com.cshk.datavault
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +13,8 @@ import android.provider.Settings
 import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -64,6 +68,7 @@ object Colors {
 	val teal = Color(0xFF14B8A6)
 }
 
+private const val REQUEST_CODE_READ_STORAGE = 1001
 data class SyncProfile(
 	val serverIp: String,
 	val username: String,
@@ -106,7 +111,7 @@ private fun DataVaultApp(activity: ComponentActivity) {
 	)
 
 	var selectedTab by rememberSaveable { mutableStateOf(AppTab.Dashboard) }
-	var permissionGranted by remember { mutableStateOf(hasManageExternalStoragePermission()) }
+	var permissionGranted by remember { mutableStateOf(hasStoragePermission(activity)) }
 	var profile by remember { mutableStateOf<SyncProfile?>(null) }
 	var isSyncing by remember { mutableStateOf(false) }
 	val logs = remember { mutableStateListOf<String>() }
@@ -117,7 +122,7 @@ private fun DataVaultApp(activity: ComponentActivity) {
 	DisposableEffect(lifecycleOwner) {
 		val observer = LifecycleEventObserver { _, event ->
 			if (event == Lifecycle.Event.ON_RESUME) {
-				permissionGranted = hasManageExternalStoragePermission()
+				permissionGranted = hasStoragePermission(activity)
 			}
 		}
 		lifecycleOwner.lifecycle.addObserver(observer)
@@ -599,28 +604,34 @@ private class WebDavSyncManager(private val context: Context) {
 	}
 }
 
-private fun hasManageExternalStoragePermission(): Boolean {
-	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-		Environment.isExternalStorageManager()
-	} else {
-		true
+private fun hasStoragePermission(context: Context): Boolean {
+	return when {
+		Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
+		else -> ContextCompat.checkSelfPermission(
+			context, Manifest.permission.READ_EXTERNAL_STORAGE
+		) == PackageManager.PERMISSION_GRANTED
 	}
 }
 
 private fun requestManageExternalStoragePermission(activity: ComponentActivity) {
-	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-		return
-	}
-
-	try {
-		val intent = Intent(
-			Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-			Uri.parse("package:${activity.packageName}")
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+		try {
+			val intent = Intent(
+				Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+				Uri.parse("package:${activity.packageName}")
+			)
+			activity.startActivity(intent)
+		} catch (_: ActivityNotFoundException) {
+			val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+			activity.startActivity(intent)
+		}
+	} else {
+		// API 26–29: request READ_EXTERNAL_STORAGE at runtime
+		ActivityCompat.requestPermissions(
+			activity,
+			arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+			REQUEST_CODE_READ_STORAGE
 		)
-		activity.startActivity(intent)
-	} catch (_: ActivityNotFoundException) {
-		val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-		activity.startActivity(intent)
 	}
 }
 
