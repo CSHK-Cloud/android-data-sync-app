@@ -68,6 +68,7 @@ object Colors {
 	val teal = Color(0xFF14B8A6)
 }
 
+private const val REQUEST_CODE_READ_STORAGE = 1001
 data class SyncProfile(
 	val serverIp: String,
 	val username: String,
@@ -629,7 +630,7 @@ private fun requestManageExternalStoragePermission(activity: ComponentActivity) 
 		ActivityCompat.requestPermissions(
 			activity,
 			arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-			1001
+			REQUEST_CODE_READ_STORAGE
 		)
 	}
 }
