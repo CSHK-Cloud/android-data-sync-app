@@ -27,11 +27,11 @@ jobs:
 
     - name: Debug APK/AAB outputs
       run: |
-        find android -type f \( -name "*.apk" -o -name "*.aab" \) | sort
+        find . -type f \( -name "*.apk" -o -name "*.aab" \) | sort
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: release-apk
-        path: android/app/build/outputs/apk/**/*.apk
+        path: build/app/outputs/apk/**/*.apk
         if-no-files-found: error
