@@ -25,8 +25,13 @@ jobs:
         chmod +x gradlew
         ./gradlew assembleRelease
 
+    - name: Debug APK/AAB outputs
+      run: |
+        find android -type f \( -name "*.apk" -o -name "*.aab" \) | sort
+
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: release-apk
-        path: android/app/build/outputs/apk/release/app-release-unsigned.apk
+        path: android/app/build/outputs/apk/**/*.apk
+        if-no-files-found: error
