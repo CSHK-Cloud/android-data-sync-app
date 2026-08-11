@@ -42,14 +42,16 @@ android {
     }
 
     signingConfigs {
-        release {
-            storeFile releaseKeystoreFile
-            storePassword releaseStorePassword
-            keyAlias releaseKeyAlias
-            keyPassword releaseKeyPassword
-            enableV1Signing true
-            enableV2Signing true
-            enableV3Signing true
+        if (releaseKeystoreFile.exists()) {
+            release {
+                storeFile releaseKeystoreFile
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+                enableV1Signing true
+                enableV2Signing true
+                enableV3Signing true
+            }
         }
     }
 
@@ -58,7 +60,10 @@ android {
             minifyEnabled false
         }
         release {
-            signingConfig signingConfigs.release
+            def releaseSigningConfig = signingConfigs.findByName('release')
+            if (releaseSigningConfig != null) {
+                signingConfig releaseSigningConfig
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
